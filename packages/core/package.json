@@ -13,6 +13,9 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "registry": "http://registry.npm.taobao.org/"
+  },
   "scripts": {
     "test": "echo \"Run core\""
   },
