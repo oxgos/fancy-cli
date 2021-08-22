@@ -1,0 +1,26 @@
+{
+  "name": "@fancy-cli/core",
+  "version": "1.0.0",
+  "description": "fancy-cli core",
+  "author": "oxgos <122486975@qq.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npm.taobao.org/"
+  },
+  "scripts": {
+    "test": "echo \"Run core\""
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "@fancy-cli/utils": "^1.0.0"
+  }
+}
