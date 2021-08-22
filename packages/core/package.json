@@ -1,6 +1,6 @@
 {
   "name": "@fancy-cli/core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "fancy-cli core",
   "author": "oxgos <122486975@qq.com>",
   "homepage": "",
@@ -20,7 +20,7 @@
     "test": "echo \"Run core\""
   },
   "dependencies": {
-    "@fancy-cli/utils": "^1.0.1",
+    "@fancy-cli/utils": "^1.0.2",
     "lodash": "^4.17.21"
   },
   "gitHead": "8fe82703d78cb2eed0e0905fea5aebd9571db2a2"
