@@ -13,14 +13,11 @@
   "files": [
     "lib"
   ],
-  "publishConfig": {
-    "registry": "http://registry.npm.taobao.org/"
-  },
   "scripts": {
     "test": "echo \"Run utils\""
   },
   "dependencies": {
     "lodash": "^4.17.21"
   },
-  "gitHead": "77caf6f30b9c4458e283054195591f1fc9cb24be"
+  "gitHead": "42ebaf232a4eb269b5573929ac376444c98f4034"
 }
