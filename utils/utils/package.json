@@ -1,6 +1,6 @@
 {
   "name": "@fancy-cli/utils",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "fancy-cli utils",
   "author": "oxgos <122486975@qq.com>",
   "homepage": "",
@@ -16,7 +16,6 @@
   "scripts": {
     "test": "echo \"Run utils\""
   },
-  "dependencies": {},
   "gitHead": "194b14e9ddfdb774f92f1281348782083f9094f2",
   "publishConfig": {
     "access": "public"
