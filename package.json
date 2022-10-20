@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "",
   "bin": {
-    "fancy": "packages/core/lib/index.js"
+    "fancy": "core/cli/bin/index.js"
   },
   "main": "index.js",
   "scripts": {

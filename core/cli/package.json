@@ -17,8 +17,10 @@
     "test": "echo \"Run core\""
   },
   "dependencies": {
-    "@fancy-cli/utils": "^1.0.4",
-    "lodash": "^4.17.21"
+    "@fancy-cli/utils": "file:../../utils/utils",
+    "import-local": "^3.1.0",
+    "lodash": "^4.17.21",
+    "npmlog": "^7.0.1"
   },
   "gitHead": "194b14e9ddfdb774f92f1281348782083f9094f2",
   "publishConfig": {
