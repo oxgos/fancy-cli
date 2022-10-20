@@ -5,7 +5,7 @@
   "author": "oxgos <122486975@qq.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "lib/index.js",
+  "main": "bin/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"

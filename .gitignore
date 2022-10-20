@@ -1,4 +1,7 @@
 lerna-debug.log
 node_modules
 
-packages/**/node_modules
+core/**/node_modules
+commands/**/node_modules
+models/**/node_modules
+utils/**/node_modules
