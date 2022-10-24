@@ -1,0 +1,32 @@
+{
+  "name": "@fancy-cli/log",
+  "version": "1.0.7",
+  "description": "fancy-cli log",
+  "keywords": [
+    "log"
+  ],
+  "author": "GavinGuo <122486975@qq.com>",
+  "homepage": "https://github.com/oxgos/fancy-cli#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxgos/fancy-cli.git"
+  },
+  "scripts": {
+    "test": "echo \"Run core\""
+  },
+  "bugs": {
+    "url": "https://github.com/oxgos/fancy-cli/issues"
+  },
+  "dependencies": {
+    "npmlog": "^7.0.1"
+  }
+}

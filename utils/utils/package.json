@@ -14,7 +14,7 @@
     "lib"
   ],
   "scripts": {
-    "test": "echo \"Run utils\""
+    "test": "echo \"Run core\""
   },
   "gitHead": "194b14e9ddfdb774f92f1281348782083f9094f2",
   "publishConfig": {

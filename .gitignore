@@ -1,5 +1,7 @@
 lerna-debug.log
 node_modules
+.vscode
+.DS_Store
 
 core/**/node_modules
 commands/**/node_modules
