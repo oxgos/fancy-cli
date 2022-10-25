@@ -1,0 +1,31 @@
+{
+  "name": "get-npm-info",
+  "version": "1.0.7",
+  "description": "get npm info",
+  "author": "GavinGuo <122486975@qq.com>",
+  "homepage": "https://github.com/oxgos/fancy-cli#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxgos/fancy-cli.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/oxgos/fancy-cli/issues"
+  },
+  "dependencies": {
+    "axios": "^1.1.3",
+    "semver": "^7.3.8",
+    "url-join": "^4.0.1"
+  }
+}

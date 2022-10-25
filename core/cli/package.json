@@ -18,10 +18,15 @@
   },
   "dependencies": {
     "@fancy-cli/log": "file:../../utils/log",
+    "get-npm-info": "file:../../utils/get-npm-info",
     "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
     "import-local": "^3.1.0",
     "lodash": "^4.17.21",
+    "minimist": "^1.2.7",
     "npmlog": "^7.0.1",
+    "path-exists": "^4.0.0",
+    "root-check": "^1.0.0",
     "semver": "^7.3.8"
   },
   "gitHead": "194b14e9ddfdb774f92f1281348782083f9094f2",
