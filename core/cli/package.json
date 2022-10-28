@@ -6,6 +6,9 @@
   "homepage": "",
   "license": "ISC",
   "main": "bin/index.js",
+  "bin": {
+    "fancy": "bin/index.js"
+  },
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -18,9 +21,10 @@
   },
   "dependencies": {
     "@fancy-cli/log": "file:../../utils/log",
-    "get-npm-info": "file:../../utils/get-npm-info",
     "colors": "^1.4.0",
+    "commander": "^9.4.1",
     "dotenv": "^16.0.3",
+    "get-npm-info": "file:../../utils/get-npm-info",
     "import-local": "^3.1.0",
     "lodash": "^4.17.21",
     "minimist": "^1.2.7",
