@@ -7,7 +7,8 @@ const commander = require('commander');
 const semver = require('semver');
 const colors = require('colors/safe');
 const log = require('@fancy-cli/log');
-const { getSemverVersion } = require('get-npm-info');
+const init = require('@fancy-cli/init');
+const { getSemverVersion } = require('@fancy-cli/get-npm-info');
 // 获取用户目录
 const userHome = require('os').homedir();
 const pathExists = require('path-exists').sync;
@@ -19,17 +20,20 @@ const program = new commander.Command();
 
 async function core() {
   try {
-    checkVersion();
-    checkNodeVersion();
-    checkRoot();
-    checkUserHome();
-    // checkInputArgs();
-    checkEnv();
-    await checkGlobalUpdate();
+    await prepare();
     registerCommander();
   } catch (e) {
     log.error(e.message);
   }
+}
+
+async function prepare() {
+  checkVersion();
+  checkNodeVersion();
+  checkRoot();
+  checkUserHome();
+  checkEnv();
+  await checkGlobalUpdate();
 }
 
 function registerCommander() {
@@ -37,17 +41,29 @@ function registerCommander() {
     .version(pkg.version)
     .name(Object.keys(pkg.bin)[0])
     .usage('<command> [options]')
-    .option('-d, --debug', '是否开启调试模式', false); // 第三参数默认值
+    .option('-d, --debug', '是否开启调试模式', false) // 第三参数默认值
+    .option('-tp, --targetPath <targetPath>', '是否指定本地调试文件路径', '');
+
+  program
+    .command('init [projectName]')
+    .option('-f, --force', '是否强制初始化项目')
+    .action(init);
 
   // 开启debug模式
   program.on('option:debug', function () {
-    if (program.opts().debug) {
+    if (program.debug) {
       process.env.LOG_LEVEL = 'verbose';
     } else {
       process.env.LOG_LEVEL = 'info';
     }
     log.level = process.env.LOG_LEVEL;
     log.verbose('test');
+  });
+
+  program.on('option:targetPath', function () {
+    if (program.targetPath) {
+      process.env.CLI_TARGET_PATH = program.targetPath;
+    }
   });
 
   // 监听未知命令
@@ -58,11 +74,6 @@ function registerCommander() {
       console.log(colors.red(`可用命令: ${availableCommands.join(',')}`));
     }
   });
-
-  if (program.args && program.args.length === 0) {
-    program.outputHelp();
-    console.log();
-  }
 
   program.parse(process.argv);
 }
@@ -92,7 +103,6 @@ function checkEnv() {
     });
   }
   createDefaultConfig();
-  log.verbose('环境变量', process.env.CLI_HOME);
 }
 
 function createDefaultConfig() {
@@ -109,22 +119,6 @@ function createDefaultConfig() {
     );
   }
   process.env.CLI_HOME = cliConfig.cliHome;
-}
-
-// 检测入参
-function checkInputArgs() {
-  argv = require('minimist')(process.argv.slice(2));
-  checkDebug();
-}
-
-// 用于debug模式日志输出
-function checkDebug() {
-  if (argv.debug) {
-    process.env.LOG_LEVEL = 'verbose';
-  } else {
-    process.env.LOG_LEVEL = 'info';
-  }
-  log.level = process.env.LOG_LEVEL;
 }
 
 // 检测用户主目录

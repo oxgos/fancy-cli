@@ -20,14 +20,14 @@
     "test": "echo \"Run core\""
   },
   "dependencies": {
+    "@fancy-cli/get-npm-info": "file:../../utils/get-npm-info",
+    "@fancy-cli/init": "file:../../commands/init",
     "@fancy-cli/log": "file:../../utils/log",
     "colors": "^1.4.0",
-    "commander": "^9.4.1",
+    "commander": "^6.2.1",
     "dotenv": "^16.0.3",
-    "get-npm-info": "file:../../utils/get-npm-info",
     "import-local": "^3.1.0",
     "lodash": "^4.17.21",
-    "minimist": "^1.2.7",
     "npmlog": "^7.0.1",
     "path-exists": "^4.0.0",
     "root-check": "^1.0.0",
