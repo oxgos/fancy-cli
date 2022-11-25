@@ -4,5 +4,5 @@
   // language - current active spelling language
   "language": "en",
   // words - list of words to be always considered correct
-  "words": ["npmlog", "oxgos"]
+  "words": ["npmlog", "oxgos", "npminstall"]
 }

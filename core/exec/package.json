@@ -1,10 +1,7 @@
 {
-  "name": "@fancy-cli/log",
+  "name": "@fancy-cli/exec",
   "version": "1.0.0",
-  "description": "fancy-cli log",
-  "keywords": [
-    "log"
-  ],
+  "description": "fancy-cli execute package",
   "author": "GavinGuo <122486975@qq.com>",
   "homepage": "https://github.com/oxgos/fancy-cli#readme",
   "license": "ISC",
@@ -16,17 +13,22 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oxgos/fancy-cli.git"
   },
   "scripts": {
-    "test": "echo \"Run core\""
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/oxgos/fancy-cli/issues"
   },
   "dependencies": {
-    "npmlog": "^7.0.1"
+    "@fancy-cli/log": "file:../../utils/log",
+    "@fancy-cli/package": "file:../../models/package",
+    "pkg-dir": "^5.0.0"
   }
 }

@@ -1,10 +1,7 @@
 {
-  "name": "@fancy-cli/log",
+  "name": "@fancy-cli/format-path",
   "version": "1.0.0",
-  "description": "fancy-cli log",
-  "keywords": [
-    "log"
-  ],
+  "description": "format path",
   "author": "GavinGuo <122486975@qq.com>",
   "homepage": "https://github.com/oxgos/fancy-cli#readme",
   "license": "ISC",
@@ -16,17 +13,17 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oxgos/fancy-cli.git"
   },
   "scripts": {
-    "test": "echo \"Run core\""
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/oxgos/fancy-cli/issues"
-  },
-  "dependencies": {
-    "npmlog": "^7.0.1"
   }
 }

@@ -8,6 +8,7 @@ const semver = require('semver');
 const colors = require('colors/safe');
 const log = require('@fancy-cli/log');
 const init = require('@fancy-cli/init');
+const exec = require('@fancy-cli/exec');
 const { getSemverVersion } = require('@fancy-cli/get-npm-info');
 // 获取用户目录
 const userHome = require('os').homedir();
@@ -24,6 +25,9 @@ async function core() {
     registerCommander();
   } catch (e) {
     log.error(e.message);
+    if (program.debug) {
+      console.log(e);
+    }
   }
 }
 
@@ -47,7 +51,7 @@ function registerCommander() {
   program
     .command('init [projectName]')
     .option('-f, --force', '是否强制初始化项目')
-    .action(init);
+    .action(exec);
 
   // 开启debug模式
   program.on('option:debug', function () {
@@ -109,16 +113,12 @@ function createDefaultConfig() {
   const cliConfig = {
     home: userHome
   };
-  if (process.env.CLI_HOME) {
-    cliConfig['cliHome'] = path.join(userHome, process.env.CLI_HOME);
+  if (process.env.CLI_HOME_PATH) {
+    cliConfig['cliHome'] = path.join(userHome, process.env.CLI_HOME_PATH);
   } else {
-    cliConfig['cliHome'] = path.join(
-      userHome,
-      'cli',
-      constant.DEFAULT_CLI_HOME
-    );
+    cliConfig['cliHome'] = path.join(userHome, constant.DEFAULT_CLI_HOME_PATH);
   }
-  process.env.CLI_HOME = cliConfig.cliHome;
+  process.env.CLI_HOME_PATH = cliConfig.cliHome;
 }
 
 // 检测用户主目录

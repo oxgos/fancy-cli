@@ -1,6 +1,6 @@
 {
   "name": "@fancy-cli/get-npm-info",
-  "version": "1.0.7",
+  "version": "1.0.0",
   "description": "get npm info",
   "author": "GavinGuo <122486975@qq.com>",
   "homepage": "https://github.com/oxgos/fancy-cli#readme",
