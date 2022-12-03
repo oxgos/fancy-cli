@@ -33,7 +33,6 @@ async function core() {
 
 async function prepare() {
   checkVersion();
-  checkNodeVersion();
   checkRoot();
   checkUserHome();
   checkEnv();
@@ -142,15 +141,4 @@ function checkRoot() {
 // 检测cli版本
 function checkVersion() {
   log.notice('cli', pkg.version);
-}
-
-// 检测node版本
-function checkNodeVersion() {
-  const currentVersion = process.version;
-  const lowestVersion = constant.LOWEST_NODE_VERSION;
-  if (!semver.gte(currentVersion, lowestVersion)) {
-    throw new Error(
-      colors.red(`node版本过低,至少需要${lowestVersion}版本以上`)
-    );
-  }
 }

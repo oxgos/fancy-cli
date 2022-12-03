@@ -1,7 +1,7 @@
 {
-  "name": "@fancy-cli/init",
-  "version": "1.0.7",
-  "description": "fancy-cli init",
+  "name": "@fancy-cli/command",
+  "version": "1.0.0",
+  "description": "fancy-cli npm modules",
   "author": "GavinGuo <122486975@qq.com>",
   "homepage": "https://github.com/oxgos/fancy-cli#readme",
   "license": "ISC",
@@ -13,9 +13,6 @@
   "files": [
     "lib"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oxgos/fancy-cli.git"
@@ -27,7 +24,8 @@
     "url": "https://github.com/oxgos/fancy-cli/issues"
   },
   "dependencies": {
-    "@fancy-cli/command": "file:../../models/command",
-    "@fancy-cli/log": "file:../../utils/log"
+    "@fancy-cli/log": "file:../../utils/log",
+    "colors": "^1.4.0",
+    "semver": "^7.3.8"
   }
 }
