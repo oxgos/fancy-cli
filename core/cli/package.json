@@ -23,7 +23,7 @@
     "@fancy-cli/get-npm-info": "file:../../utils/get-npm-info",
     "@fancy-cli/init": "file:../../commands/init",
     "@fancy-cli/log": "file:../../utils/log",
-    "@fancy-cli/exec": "file:../ exec",
+    "@fancy-cli/exec": "file:../exec",
     "colors": "^1.4.0",
     "commander": "^6.2.1",
     "dotenv": "^16.0.3",

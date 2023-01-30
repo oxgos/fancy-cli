@@ -6,7 +6,7 @@ const Package = require('@fancy-cli/package');
 const log = require('@fancy-cli/log');
 
 const SETTINGS = {
-  init: '@fancy-cli/init'
+  init: '@fancy-cli/init',
 };
 
 const CACHE_DIR = 'dependencies';
@@ -22,7 +22,7 @@ async function exec() {
   const homePath = process.env.CLI_HOME_PATH;
   log.verbose('targetPath', targetPath);
   log.verbose('homePath', homePath);
-
+  // argument -> ['0']: projectName, ['1']: CommandObject
   const cmdObj = arguments[arguments.length - 1];
   const cmdName = cmdObj.name();
   const packageName = SETTINGS[cmdName];
@@ -38,7 +38,7 @@ async function exec() {
       targetPath,
       storeDir,
       packageName,
-      packageVersion
+      packageVersion,
     });
     if (await pkg.exists()) {
       // 更新package
@@ -51,7 +51,7 @@ async function exec() {
     pkg = new Package({
       targetPath,
       packageName,
-      packageVersion
+      packageVersion,
     });
   }
   const rootFile = pkg.getRootFilePath();
@@ -75,10 +75,16 @@ async function exec() {
         }
       });
       args[args.length - 1] = o;
+      // NOTE 动态入模板代码
+      /**
+       * 例如:
+       * require('/Users/gavin_guo/Desktop/study-demo/CLI/demo/fancy-cli/commands/init/lib/index.js').call(null, ["project-test",{"commands":[],"options":[{"flags":"-f, --force","required":false,"optional":false,"variadic":false,"mandatory":false,"short":"-f","long":"--force","negate":false,"description":"是否强制初始化项目"}],"rawArgs":null,"force":true,"args":["project-test"]}])
+       */
       const code = `require('${rootFile}').call(null, ${JSON.stringify(args)})`;
+      // 执行这样的命令node -e 'console.log(1)' , (ps: -e后面为执行的javascript代码)
       const child = spawn('node', ['-e', code], {
         cwd: process.cwd(),
-        stdio: 'inherit'
+        stdio: 'inherit',
       });
       child.on('error', (e) => {
         log.error(e.message);

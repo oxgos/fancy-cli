@@ -7,7 +7,6 @@ const commander = require('commander');
 const semver = require('semver');
 const colors = require('colors/safe');
 const log = require('@fancy-cli/log');
-const init = require('@fancy-cli/init');
 const exec = require('@fancy-cli/exec');
 const { getSemverVersion } = require('@fancy-cli/get-npm-info');
 // 获取用户目录
@@ -16,7 +15,6 @@ const pathExists = require('path-exists').sync;
 const pkg = require('../package.json');
 const constant = require('./const');
 
-let argv, config;
 const program = new commander.Command();
 
 async function core() {
@@ -99,10 +97,11 @@ async function checkGlobalUpdate() {
 
 function checkEnv() {
   const dotenv = require('dotenv');
+  // 环境变量路径 -> /Users/gavin_guo/cli/.env
   const envPath = path.resolve(userHome, 'cli', '.env');
   if (pathExists(envPath)) {
-    config = dotenv.config({
-      path: envPath
+    dotenv.config({
+      path: envPath,
     });
   }
   createDefaultConfig();
@@ -110,7 +109,7 @@ function checkEnv() {
 
 function createDefaultConfig() {
   const cliConfig = {
-    home: userHome
+    home: userHome,
   };
   if (process.env.CLI_HOME_PATH) {
     cliConfig['cliHome'] = path.join(userHome, process.env.CLI_HOME_PATH);

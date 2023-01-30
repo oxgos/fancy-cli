@@ -9,7 +9,7 @@ const { isObject } = require('@fancy-cli/utils');
 const formatPath = require('@fancy-cli/format-path');
 const {
   getDefaultRegistry,
-  getNpmLatestVersion
+  getNpmLatestVersion,
 } = require('@fancy-cli/get-npm-info');
 
 class Package {
@@ -80,9 +80,9 @@ class Package {
       pkgs: [
         {
           name: this.packageName,
-          version: this.packageVersion
-        }
-      ]
+          version: this.packageVersion,
+        },
+      ],
     });
   }
 
@@ -102,9 +102,9 @@ class Package {
         pkgs: [
           {
             name: this.packageName,
-            version: latestPackageVersion
-          }
-        ]
+            version: latestPackageVersion,
+          },
+        ],
       });
       this.packageVersion = latestPackageVersion;
     }

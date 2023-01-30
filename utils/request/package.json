@@ -1,7 +1,7 @@
 {
-  "name": "@fancy-cli/init",
-  "version": "1.0.7",
-  "description": "fancy-cli init",
+  "name": "@fancy-cli/request",
+  "version": "1.0.0",
+  "description": "> TODO: description",
   "author": "GavinGuo <122486975@qq.com>",
   "homepage": "https://github.com/oxgos/fancy-cli#readme",
   "license": "ISC",
@@ -21,19 +21,12 @@
     "url": "git+https://github.com/oxgos/fancy-cli.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "node ./__tests__/@fancy-cli/request.test.js"
   },
   "bugs": {
     "url": "https://github.com/oxgos/fancy-cli/issues"
   },
   "dependencies": {
-    "@fancy-cli/command": "file:../../models/command",
-    "@fancy-cli/package": "file:../../models/package",
-    "@fancy-cli/log": "file:../../utils/log",
-    "@fancy-cli/utils": "file:../../utils/utils",
-    "@fancy-cli/request": "file:../../utils/request",
-    "fs-extra": "^9.1.0",
-    "inquirer": "^7.3.3",
-    "semver": "^7.3.8"
+    "axios": "^1.2.6"
   }
 }
