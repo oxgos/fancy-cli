@@ -1,9 +1,9 @@
 'use strict';
 
-const cp = require('child_process');
 const path = require('path');
 const Package = require('@fancy-cli/package');
 const log = require('@fancy-cli/log');
+const { exec: spawn } = require('@fancy-cli/utils');
 
 const SETTINGS = {
   init: '@fancy-cli/init',
@@ -98,14 +98,6 @@ async function exec() {
       log.error(e.message);
     }
   }
-}
-
-function spawn(command, args, options) {
-  const win32 = process.platform === 'win32';
-  // window执行的命令格式为: cp.spawn('cmd', ['/c', 'node', '-e', code])
-  const cmd = win32 ? 'cmd' : command;
-  const cmdArgs = win32 ? ['/c'].concat(command, args) : args;
-  return cp.spawn(cmd, cmdArgs, options || {});
 }
 
 module.exports = exec;

@@ -5,7 +5,7 @@ const fse = require('fs-extra');
 const inquirer = require('inquirer');
 const semver = require('semver');
 const log = require('@fancy-cli/log');
-const { spinnerStart, sleep } = require('@fancy-cli/utils');
+const { spinnerStart, sleep, execAsync } = require('@fancy-cli/utils');
 const Command = require('@fancy-cli/command');
 const Package = require('@fancy-cli/package');
 
@@ -15,6 +15,11 @@ const userHome = require('os').homedir();
 
 const TYPE_PROJECT = 'project';
 const TYPE_COMPONENT = 'component';
+
+const TEMPLATE_TYPE_NORMAL = 'normal';
+const TEMPLATE_TYPE_CUSTOM = 'custom';
+
+const WHITE_COMMAND = ['npm', 'cnpm'];
 
 class InitCommand extends Command {
   init() {
@@ -28,15 +33,96 @@ class InitCommand extends Command {
       // 1. 准备阶段
       const projectInfo = await this.prepare();
       if (projectInfo) {
+        // 2. 下载模板
         log.verbose('projectInfo', projectInfo);
         this.projectInfo = projectInfo;
         await this.downloadTemplate();
       }
-      // 2. 下载模板
       // 3. 安装模板
+      await this.installTemplate();
     } catch (e) {
       log.error(e.message);
     }
+  }
+
+  async installTemplate() {
+    if (this.templateInfo) {
+      if (!this.templateInfo.type) {
+        this.templateInfo.type = TEMPLATE_TYPE_NORMAL;
+      }
+      if (this.templateInfo.type === TEMPLATE_TYPE_NORMAL) {
+        // 标准安装
+        await this.installNormalTemplate();
+      } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
+        // 自定义安装
+        await this.installCustomTemplate();
+      } else {
+        throw new Error('无法识别项目模板类型');
+      }
+    } else {
+      throw new Error('项目模板信息不存在！');
+    }
+  }
+
+  checkCommand(cmd) {
+    if (WHITE_COMMAND.includes(cmd)) {
+      return cmd;
+    }
+    return null;
+  }
+
+  async execCommand(command, errMsg) {
+    let ret;
+    if (command) {
+      const cmdArray = command.split(' ');
+      const cmd = this.checkCommand(cmdArray[0]);
+      if (!cmd) {
+        throw new Error('命令不存在!命令: ' + command);
+      }
+      const args = cmdArray.slice(1);
+      ret = await execAsync(cmd, args, {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
+    }
+    if (ret !== 0) {
+      throw new Error(errMsg);
+    }
+    return ret;
+  }
+
+  async installNormalTemplate() {
+    log.verbose('templateInfo', this.templateInfo);
+    log.verbose('templateNpm', this.templateNpm);
+    let spinner = spinnerStart('正在安装模板...');
+    await sleep();
+    try {
+      // 拷贝模板代码至当前目录
+      const templatePath = path.resolve(
+        this.templateNpm.cacheFilePath,
+        'template'
+      );
+      const targetPath = process.cwd();
+      // 确保相关目录存在，不存在则创建
+      fse.ensureDirSync(templatePath);
+      fse.ensureDirSync(targetPath);
+      // 拷贝
+      fse.copySync(templatePath, targetPath);
+    } catch (e) {
+      throw e;
+    } finally {
+      spinner.stop(true);
+      log.success('模板安装成功');
+    }
+    // 依赖安装
+    const { installCommand, startCommand } = this.templateInfo;
+    await this.execCommand(installCommand, '依赖安装过程中失败！');
+    // 启动项目
+    this.execCommand(startCommand, '依赖安装过程中失败！');
+  }
+
+  async installCustomTemplate() {
+    console.log('安装自定义模板');
   }
 
   async downloadTemplate() {
@@ -61,6 +147,7 @@ class InitCommand extends Command {
       'node_modules'
     );
     const { npmName, version } = templateInfo;
+    this.templateInfo = templateInfo;
     const templateNpm = new Package({
       targetPath,
       storeDir,
@@ -72,22 +159,28 @@ class InitCommand extends Command {
       await sleep();
       try {
         await templateNpm.install();
-        log.success('下载模板成功');
       } catch (e) {
         throw e;
       } finally {
         spinner.stop(true);
+        if (await templateNpm.exists()) {
+          log.success('下载模板成功');
+          this.templateNpm = templateNpm;
+        }
       }
     } else {
       const spinner = spinnerStart('正在更新模板');
       await sleep();
       try {
         await templateNpm.update();
-        log.success('更新模板成功');
       } catch (e) {
         throw e;
       } finally {
         spinner.stop(true);
+        if (await templateNpm.exists()) {
+          log.success('更新模板成功');
+          this.templateNpm = templateNpm;
+        }
       }
     }
   }

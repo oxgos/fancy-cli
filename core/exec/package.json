@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@fancy-cli/log": "file:../../utils/log",
+    "@fancy-cli/utils": "file:../../utils/utils",
     "@fancy-cli/package": "file:../../models/package",
     "pkg-dir": "^5.0.0"
   }
