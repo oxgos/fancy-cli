@@ -4,6 +4,8 @@ const path = require('path');
 const fse = require('fs-extra');
 const inquirer = require('inquirer');
 const semver = require('semver');
+const ejs = require('ejs');
+const glob = require('glob');
 const log = require('@fancy-cli/log');
 const { spinnerStart, sleep, execAsync } = require('@fancy-cli/utils');
 const Command = require('@fancy-cli/command');
@@ -42,6 +44,9 @@ class InitCommand extends Command {
       await this.installTemplate();
     } catch (e) {
       log.error(e.message);
+      if (process.env.LOG_LEVEL === 'verbose') {
+        console.log(e);
+      }
     }
   }
 
@@ -91,6 +96,52 @@ class InitCommand extends Command {
     return ret;
   }
 
+  async ejsRender(options) {
+    return new Promise((resolve, reject) => {
+      const dir = process.cwd();
+      glob(
+        '**',
+        {
+          cwd: dir,
+          ignore: options.ignore,
+          nodir: true, // 排除文件夹
+        },
+        (err, files) => {
+          if (err) {
+            reject(err);
+          }
+          Promise.all(
+            files.map((file) => {
+              const filePath = path.resolve(dir, file);
+              return new Promise((resolve1, reject1) => {
+                ejs.renderFile(
+                  filePath,
+                  this.projectInfo,
+                  {},
+                  (err, result) => {
+                    if (err) {
+                      reject1(err);
+                    } else {
+                      // ejs后,需要重新写入文件
+                      fse.writeFileSync(filePath, result);
+                      resolve1(result);
+                    }
+                  }
+                );
+              });
+            })
+          )
+            .then(() => {
+              resolve();
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        }
+      );
+    });
+  }
+
   async installNormalTemplate() {
     log.verbose('templateInfo', this.templateInfo);
     log.verbose('templateNpm', this.templateNpm);
@@ -114,11 +165,13 @@ class InitCommand extends Command {
       spinner.stop(true);
       log.success('模板安装成功');
     }
+    const ignore = ['node_modules/**', 'public/**'];
+    await this.ejsRender({ ignore });
     // 依赖安装
     const { installCommand, startCommand } = this.templateInfo;
-    await this.execCommand(installCommand, '依赖安装过程中失败！');
+    await this.execCommand(installCommand, '依赖安装失败！');
     // 启动项目
-    this.execCommand(startCommand, '依赖安装过程中失败！');
+    this.execCommand(startCommand, '启动执行命令失败！');
   }
 
   async installCustomTemplate() {
@@ -236,7 +289,15 @@ class InitCommand extends Command {
   }
 
   async getProjectInfo() {
+    function isValidName(v) {
+      return /^[a-zA-Z]+((_|-)[a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/.test(v);
+    }
     let projectInfo = {};
+    let isProjectNameValid = false;
+    if (isValidName(this.projectName)) {
+      isProjectNameValid = true;
+      projectInfo.projectName = this.projectName;
+    }
     // 1. 选择创建项目或组件
     const { type } = await inquirer.prompt([
       {
@@ -259,74 +320,89 @@ class InitCommand extends Command {
     log.verbose('type', type);
     if (type === TYPE_PROJECT) {
       // 2. 获取项目的基本信息
-      const project = await inquirer.prompt([
-        {
-          type: 'input',
-          name: 'projectName',
-          message: '请输入项目名称',
-          default: '',
-          validate: function (v) {
-            const done = this.async();
+      const projectNamePrompt = {
+        type: 'input',
+        name: 'projectName',
+        message: '请输入项目名称',
+        default: '',
+        validate: function (v) {
+          const done = this.async();
 
-            setTimeout(function () {
-              // 1.输入的首字符必须为英文字符
-              // 2.尾字符必须为英文或数字，不能为字符
-              // 3.字符仅允许"—_"
-              // 合法：a,a-b, a_b, a-b-c, a_b_c, a-b1-c1, a_b1_c1
-              // 不合法：1, a_, a-, a_1, a-1
-              if (
-                !/^[a-zA-Z]+((_|-)[a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/.test(v)
-              ) {
-                done('请输入合法的项目名称');
-                return;
-              }
-              done(null, true);
-            }, 0);
-          },
-          filter: function (v) {
-            return v;
-          },
-        },
-        {
-          type: 'input',
-          name: 'projectVersion',
-          message: '请输入项目版本号',
-          default: '1.0.0',
-          validate: function (v) {
-            const done = this.async();
-
-            setTimeout(function () {
-              // 非法版本号都返回null
-              if (!!!semver.valid(v)) {
-                done('请输入合法的版本号');
-                return;
-              }
-              done(null, true);
-            }, 0);
-          },
-          filter: function (v) {
-            if (!!semver.valid(v)) {
-              // 会将v1.0.0 -> 1.0.0
-              return semver.valid(v);
-            } else {
-              return v;
+          setTimeout(function () {
+            // 1.输入的首字符必须为英文字符
+            // 2.尾字符必须为英文或数字，不能为字符
+            // 3.字符仅允许"—_"
+            // 合法：a,a-b, a_b, a-b-c, a_b_c, a-b1-c1, a_b1_c1
+            // 不合法：1, a_, a-, a_1, a-1
+            if (!isValidName(v)) {
+              done('请输入合法的项目名称');
+              return;
             }
+            done(null, true);
+          }, 0);
+        },
+        filter: function (v) {
+          return v;
+        },
+      };
+      const projectPrompt = [];
+      if (!isProjectNameValid) {
+        projectPrompt.push(projectNamePrompt);
+      }
+      projectPrompt.push(
+        ...[
+          {
+            type: 'input',
+            name: 'projectVersion',
+            message: '请输入项目版本号',
+            default: '1.0.0',
+            validate: function (v) {
+              const done = this.async();
+
+              setTimeout(function () {
+                // 非法版本号都返回null
+                if (!!!semver.valid(v)) {
+                  done('请输入合法的版本号');
+                  return;
+                }
+                done(null, true);
+              }, 0);
+            },
+            filter: function (v) {
+              if (!!semver.valid(v)) {
+                // 会将v1.0.0 -> 1.0.0
+                return semver.valid(v);
+              } else {
+                return v;
+              }
+            },
           },
-        },
-        {
-          type: 'list',
-          name: 'projectTemplate',
-          message: '请选择项目模板',
-          choices: this.createTemplateChoice(),
-        },
-      ]);
+          {
+            type: 'list',
+            name: 'projectTemplate',
+            message: '请选择项目模板',
+            choices: this.createTemplateChoice(),
+          },
+        ]
+      );
+      const project = await inquirer.prompt(projectPrompt);
       projectInfo = {
         type,
+        ...projectInfo,
         ...project,
       };
     } else if (type === TYPE_COMPONENT) {
     }
-
+    // 生成classname -> 用于ejs替换模板中package.json的项目名称
+    if (projectInfo.projectName) {
+      projectInfo.name = projectInfo.projectName;
+      projectInfo.className = require('kebab-case')(
+        projectInfo.projectName
+      ).replace(/^-/, '');
+    }
+    if (projectInfo.projectVersion) {
+      projectInfo.version = projectInfo.projectVersion;
+    }
     return projectInfo;
   }
 
